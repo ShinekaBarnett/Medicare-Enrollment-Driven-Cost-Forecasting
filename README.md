@@ -1,59 +1,62 @@
-# Medicare Enrollment-Driven Cost Forecasting
+# Medicare Enrollment Pipeline A Databricks Healthcare Project
 
 ## Overview
-This project analyzes historical Medicare enrollment data (2016–2021) to forecast future service demand and simulate reimbursement costs across U.S. states and demographic groups. Built on Databricks, it demonstrates scalable data engineering, predictive modeling, and strategic healthcare insights using real CMS data.
+This project explores 2021 Medicare enrollment data to simulate reimbursement costs and uncover demographic and geographic trends across U.S. states. Built on Azure Databricks, it showcases scalable data engineering and healthcare analytics using real CMS data.
 
 ## Dataset
 **Source:** [CMS Program Statistics – Medicare Newly Enrolled](https://data.cms.gov/summary-statistics-on-beneficiary-enrollment/medicare-and-medicaid-reports/cms-program-statistics-medicare-newly-enrolled)  
-**File Used:** `CPS MDCR ENROLL AB 21-32 2021.xlsx`  
+**File Used:** `CPS MDCR ENROLL AB 24 2021.xlsx`  
 **Contents:**  
-- Monthly and annual enrollment counts  
-- Breakdown by age, disability status, race, sex, and geography  
-- Plan types: Original Medicare vs. Medicare Advantage  
+- Total, Aged, and Disabled Enrollees, by Area of Residence
 
 ## Objectives
-- Forecast Medicare enrollment trends by state and demographic group  
-- Simulate reimbursement costs based on projected enrollment  
-- Identify high-growth regions and underserved populations  
-- Support strategic planning for providers and policymakers  
+- Analyze 2021 Medicare Enrollment by state 
+- Identify states with high disabled-to-aged ratios  
+- Simulate reimbursement costs using static per-beneficiary rates 
+ 
 
 ## Architecture
 - **Platform:** Azure Databricks  
 - **Storage:** Delta Lake  
-- **Tools:** PySpark, MLflow, Auto Loader, Pandas, Plotly  
+- **Tools:** PySpark, MLflow, Pandas, Plotly, Auto Loader 
 
 ## Pipeline Structure
 ### 1. Data Ingestion
-- Load Excel sheets into Databricks using Auto Loader  
-- Normalize column formats and unify schema across years  
+- Load MDCR ENROLL AB 24 sheet into Databricks using Auto Loader 
+- Clean column names and filter out non-state rows
+- Convert nukeric columns and handle suppressed values(*,†) 
 
 ### 2. Feature Engineering
-- Calculate growth rates, aged vs. disabled ratios, and regional flags  
-- Create rolling averages and seasonal indicators  
+- Compute: 
+    1.Total enrollment per state
+    2.Aged vs. disabled ratios
+    3.Part A vs. Part B participation  
+- Flag states with above-average disabled enrollment
+- Normalize values for visualization
 
-### 3. Forecasting & Simulation
-- Train time series models (ARIMA, Prophet) on monthly enrollment  
-- Estimate future reimbursement costs using synthetic per-beneficiary rates  
-- Track model performance with MLflow  
+### 3. Simulation
+- Apply fixed reimbursement rates  
+- Estimate total cost per state  
+- Rank states by projected cost burden 
 
 ### 4. Visualization
-- Interactive dashboards showing:
-  - Top states by projected enrollment growth  
-  - Estimated reimbursement burden by demographic  
-  - Seasonal spikes in service demand  
+- Build dashboards with:
+  - Choropleth map of enrollment by state
+  - Bar chart of diabled vs. aged ratios  
+  - Cost simulation by state  
 
 ## Key Insights
-- Enrollment growth hotspots for Medicare Advantage  
-- Cost burden projections for disabled beneficiaries  
-- Equity gaps in coverage by race and sex  
+- States with disproportionately high disabled enrollment  
+- Cost-heavy regions based on demographic mix  
+- States with low Part B uptake (potential gaps in coverage) 
 
 ## How to Run
 1. Clone this repo and open in Databricks  
-2. Upload the CMS dataset to DBFS  
-3. Run `01_ingest_and_clean.ipynb` to prepare the data  
-4. Run `02_feature_engineering.ipynb` to generate features  
-5. Run `03_forecasting_and_simulation.ipynb` to build models  
-6. Run `04_visualization.ipynb` to explore insights  
+2. Upload the Excel sheet to DBFS  
+3. Run `01_ingest_and_clean.ipynb` to load and clean the data 
+4. Run `02_feature_engineering.ipynb` to compute metrics  
+5. Run `03_simulation.ipynb` to estimate costs 
+6. Run `04_visualization.ipynb` to explore results 
 
 ## Author
 **Shineka Barnett** — Data Engineer 
